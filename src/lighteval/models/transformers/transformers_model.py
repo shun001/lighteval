@@ -151,7 +151,7 @@ class TransformersModelConfig:
     add_special_tokens: bool = True
     model_parallel: Optional[bool] = None
     dtype: Optional[Union[str, torch.dtype]] = None
-    device: Union[int, str] = "cuda"
+    device: Union[int, str] = "npu"
     quantization_config: Optional[BitsAndBytesConfig] = None
     trust_remote_code: bool = False
     use_chat_template: bool = False
@@ -389,7 +389,7 @@ class TransformersModel(LightevalModel):
             return False, None, None
 
         self.num_local_processes = int(os.environ.get("LOCAL_WORLD_SIZE", 1))
-        self.num_machines = torch.cuda.device_count() // self.num_local_processes
+        self.num_machines = torch.npu.device_count() // self.num_local_processes
         if self.num_machines == 0:
             logger.info("We are not in a distributed setting. Setting model_parallel to False.")
             model_parallel = False

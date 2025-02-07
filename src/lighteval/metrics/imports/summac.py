@@ -42,8 +42,8 @@ def wait_free_gpu(gb_needed):
 def select_freer_gpu():
     freer_gpu = str(get_freer_gpu())
     logger.info("Will use GPU: %s" % (freer_gpu))
-    os.environ["CUDA_LAUNCH_BLOCKING"] = "1"
-    os.environ["CUDA_VISIBLE_DEVICES"] = "" + freer_gpu
+    os.environ["ASCEND_LAUNCH_BLOCKING"] = "1"
+    os.environ["ASCEND_RT_VISIBLE_DEVICES"] = "" + freer_gpu
     return freer_gpu
 
 
@@ -98,7 +98,7 @@ def get_neutral_idx(ent_idx, con_idx):
 
 class SummaCImager:
     def __init__(
-        self, model_name="mnli", granularity="paragraph", use_cache=True, max_doc_sents=100, device="cuda", **kwargs
+        self, model_name="mnli", granularity="paragraph", use_cache=True, max_doc_sents=100, device="npu", **kwargs
     ):
         self.grans = granularity.split("-")
 
@@ -131,7 +131,7 @@ class SummaCImager:
 
             self.model = Predictor.from_path(
                 "https://storage.googleapis.com/allennlp-public-models/decomposable-attention-elmo-2020.04.09.tar.gz",
-                cuda_device=0,
+                npu_device=0,
             )
 
         else:
@@ -267,7 +267,7 @@ class SummaCZS:
         use_ent=True,
         use_con=True,
         imager_load_cache=True,
-        device="cuda",
+        device="npu",
         **kwargs,
     ):
         assert op2 in ["min", "mean", "max"], "Unrecognized `op2`"

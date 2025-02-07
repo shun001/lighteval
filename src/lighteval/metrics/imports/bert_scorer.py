@@ -71,7 +71,7 @@ def bert_encode(model, x, attention_mask, all_layers=False):
     return emb
 
 
-def collate_idf(arr, tokenizer, idf_dict, device="cuda:0"):
+def collate_idf(arr, tokenizer, idf_dict, device="npu:0"):
     """
     Helper function that pads a list of sentences to hvae the same length and
     loads idf score for words in the sentences.
@@ -108,7 +108,7 @@ def get_bert_embedding(
     tokenizer,
     idf_dict,
     batch_size=-1,
-    device="cuda:0",
+    device="npu:0",
     all_layers=False,
 ):
     """
@@ -244,7 +244,7 @@ def bert_cos_score_idf(
     idf_dict,
     verbose=False,
     batch_size=64,
-    device="cuda:0",
+    device="npu:0",
     all_layers=False,
 ):
     """
@@ -363,7 +363,7 @@ class BERTScorer:
             assert lang is not None, "Need to specify Language when rescaling with baseline"
 
         if device is None:
-            self.device = "cuda" if torch.cuda.is_available() else "cpu"
+            self.device = "npu" if torch.npu.is_available() else "npu"
         else:
             self.device = device
 

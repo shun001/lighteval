@@ -143,7 +143,7 @@ class VLLMModel(LightevalModel):
         gc.collect()
         ray.shutdown()
         destroy_distributed_environment()
-        torch.cuda.empty_cache()
+        torch.npu.empty_cache()
 
     @property
     def add_special_tokens(self):

@@ -303,7 +303,7 @@ class NanotronLightevalModel(LightevalModel):
 
     @property
     def device(self) -> Union[int, str, torch.device]:
-        return "cuda"
+        return "npu"
 
     def _get_batch_size(self, max_input_length: int, override_bs: int = 0, starting_batch_size: int = 512) -> int:
         if override_bs:
@@ -587,8 +587,8 @@ class NanotronLightevalModel(LightevalModel):
             inputs.append(inp.unsqueeze(0))  # [1, padding_length]
             input_lengths.append(inplen)
 
-        input_ids = torch.cat(inputs, dim=0).to("cuda")  # [batch, padding_length]
-        input_mask = torch.cat(attention_masks, dim=0).to("cuda")
+        input_ids = torch.cat(inputs, dim=0).to("npu")  # [batch, padding_length]
+        input_mask = torch.cat(attention_masks, dim=0).to("npu")
 
         return Batch(
             input_ids=input_ids, input_mask=input_mask, input_lengths=input_lengths, truncated=truncated, padded=padded
@@ -698,7 +698,7 @@ class NanotronLightevalModel(LightevalModel):
             for j, batch_data in enumerate(tq):
                 if j < 3:
                     log_rank(
-                        f"Memory usage: {torch.cuda.memory_allocated() / 1024**2:.2f}MB. Peak reserved memory: {torch.cuda.max_memory_reserved() / 1024**2:.2f}MB",
+                        f"Memory usage: {torch.npu.memory_allocated() / 1024**2:.2f}MB. Peak reserved memory: {torch.npu.max_memory_reserved() / 1024**2:.2f}MB",
                         logger=logger,
                         level=logging.INFO,
                         group=self.parallel_context.world_pg,
@@ -929,7 +929,7 @@ class NanotronLightevalModel(LightevalModel):
             for j, batch_data in enumerate(tq):
                 if j < 3:
                     log_rank(
-                        f"Memory usage: {torch.cuda.memory_allocated() / 1024**2:.2f}MB. Peak reserved memory: {torch.cuda.max_memory_reserved() / 1024**2:.2f}MB",
+                        f"Memory usage: {torch.npu.memory_allocated() / 1024**2:.2f}MB. Peak reserved memory: {torch.npu.max_memory_reserved() / 1024**2:.2f}MB",
                         logger=logger,
                         level=logging.INFO,
                         group=self.parallel_context.world_pg,
@@ -1169,7 +1169,7 @@ class NanotronLightevalModel(LightevalModel):
             for j, indexed_batch in enumerate(tq):
                 if j < 3:
                     log_rank(
-                        f"Memory usage: {torch.cuda.memory_allocated() / 1024**2:.2f}MB. Peak reserved memory: {torch.cuda.max_memory_reserved() / 1024**2:.2f}MB",
+                        f"Memory usage: {torch.npu.memory_allocated() / 1024**2:.2f}MB. Peak reserved memory: {torch.npu.max_memory_reserved() / 1024**2:.2f}MB",
                         logger=logger,
                         level=logging.INFO,
                         group=self.parallel_context.world_pg,

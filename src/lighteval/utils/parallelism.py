@@ -91,7 +91,7 @@ def find_executable_batch_size(function: callable = None, starting_batch_size: i
     def decorator(*args, **kwargs):
         nonlocal batch_size
         gc.collect()
-        torch.cuda.empty_cache()
+        torch.npu.empty_cache()
         params = list(inspect.signature(function).parameters.keys())
         # Guard against user error
         if len(params) < (len(args) + 1):
@@ -108,7 +108,7 @@ def find_executable_batch_size(function: callable = None, starting_batch_size: i
             except Exception as e:
                 if should_reduce_batch_size(e):
                     gc.collect()
-                    torch.cuda.empty_cache()
+                    torch.npu.empty_cache()
                     batch_size //= 2
                 else:
                     raise
@@ -150,7 +150,7 @@ def test_all_gather(accelerator=None, parallel_context=None):
             group=parallel_context.dp_pg,
             rank=0,
         )
-        test_tensor = torch.tensor([dist.get_rank(parallel_context.world_pg)], device=torch.device("cuda"))
+        test_tensor = torch.tensor([dist.get_rank(parallel_context.world_pg)], device=torch.device("npu"))
         test_tensor_list = [torch.zeros_like(test_tensor) for _ in range(parallel_context.world_pg.size())]
         dist.all_gather(test_tensor_list, test_tensor, group=parallel_context.world_pg, async_op=False)
         dist.barrier()
