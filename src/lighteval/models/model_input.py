@@ -37,7 +37,7 @@ class GenerationParameters:
 
     seed: Optional[int] = None  # vllm, tgi
     stop_tokens: Optional[list[str]] = None  # vllm, transformers, tgi
-    temperature: Optional[float] = None  # vllm, transformers, tgi
+    temperature: Optional[float] = 0  # vllm, transformers, tgi
     top_k: Optional[int] = None  # vllm, transformers, tgi
     min_p: Optional[float] = None  # vllm, transformers
     top_p: Optional[int] = None  # vllm, transformers, tgi
